@@ -3,25 +3,23 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofBackground(255);
-    numOfParticles = 0;
     numLayers = 2;
     
-    string path = "/Users/Callum/Desktop/Programming/XCode Libraries/OF_ROOT/apps/myApps/gameJamDraft/bin/data/levels";
+    pSys.setup(CELL_SZ*2, CELL_SZ*1.5);
+    
+    string path = "/Users/Callum/Desktop/Programming/XCode Libraries/OF_ROOT/apps/myApps/gameJamDraft/bin/data/assets";
     readMap(path + "/level1_bkg.csv", firstLayer);
     readMap(path + "/level1_items.csv", secondLayer);
+    
 
-//    spritesheet = ofImage();
     spritesheet.load(path + "/sprite_sheets.png");
     
     int numSprites = spritesheet.getWidth() / CELL_SZ;
     
-    
     for(int i=0; i<numSprites; i++){
         for(int j=0; j<numSprites; j++){
-//            ofImage sprite;
-            sprite.allocate(cellSize, cellSize, OF_IMAGE_COLOR);
-            sprite.cropFrom(spritesheet, i*cellSize, j*cellSize, cellSize, cellSize);
-            
+            sprite.allocate(CELL_SZ, CELL_SZ, OF_IMAGE_COLOR);
+            sprite.cropFrom(spritesheet, j*CELL_SZ, i*CELL_SZ, CELL_SZ, CELL_SZ);
             sprites.push_back(sprite);
         }
     }
@@ -44,11 +42,8 @@ void ofApp::readMap(string path, int layer[][GRID_SZ]){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    for(int i=0; i<numOfParticles; i++){
-        ofVec2f gravity = ofVec2f(0,0.2);
-        particles[i].applyForce(gravity);
-        particles[i].update();
-    }
+    pSys.update();
+    mouseLocation();
 }
 
 //--------------------------------------------------------------
@@ -72,28 +67,26 @@ void ofApp::draw(){
                         spriteIdx = 0;
                         break;
                 }
-                if(spriteIdx > 0){
+                if(spriteIdx >= 0){
                     sprite = sprites[spriteIdx];
-                    sprite.draw(i*cellSize, j*cellSize, cellSize, cellSize);
+                    /*
+                     run rotate() here;
+                     */
+                    sprite.draw(j*CELL_SZ, i*CELL_SZ, CELL_SZ, CELL_SZ);
                 }
             }
         }
     }
-
+    ofPushStyle();
+    ofSetColor(255, 0, 0);
+    ofDrawEllipse(positionX, positionY, 10, 10);
+    ofPopStyle();
     
-    for(int i=0; i<numOfParticles; i++){
-        particles[i].draw();
-    }
+    pSys.draw();
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    if(key == 'c'){
-        Particle p;
-        p.setup(100,125);
-        particles.push_back(p);
-        numOfParticles++;
-    }
 
 
 }
@@ -115,6 +108,51 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
+    int localPositionX = (positionX/GRID_SZ);
+    int localPositionY = (positionY/GRID_SZ);
+    if(button == 0){
+        rotate(localPositionX, localPositionY);
+    }
+//    if(button == 0){
+//        for(int i=0; i<GRID_SZ; i++){
+//            for(int j=0; j<GRID_SZ; j++){
+//                secondLayer[localPositionX][localPositionY];
+//                
+//                
+//            }
+//        }
+//    }
+    
+}
+
+void ofApp::rotate(int x, int y){
+    int spriteIdx = secondLayer[x][y];
+    /*
+     if we replace sprites we can say:
+     spriteIdx = spriteIdx + 1;
+     return spriteIdx;
+     */
+    
+    /*
+     if we rotate the sprite:
+     ofPixels pixels
+     
+     pixels.allocate(128,128,RGB);
+     
+     */
+}
+
+void ofApp::mouseLocation(){
+    float mouseXoffset = ofGetMouseX()%CELL_SZ;
+    float mouseYoffset = ofGetMouseY()%CELL_SZ;
+    
+    int mouseXPos = ofGetMouseX() - mouseXoffset;
+    mouseXPos += CELL_SZ*0.5;
+    int mouseYPos = ofGetMouseY() - mouseYoffset;
+    mouseYPos += CELL_SZ*0.5;
+    
+    positionX = mouseXPos;
+    positionY = mouseYPos;
     
 }
 //--------------------------------------------------------------

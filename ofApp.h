@@ -3,9 +3,10 @@
 #include "ofMain.h"
 #include "Particle.h"
 #include "ofxCsv.h"
+#include "ParticleSystem.h"
 
 #define GRID_SZ 10
-#define CELL_SZ 128
+#define CELL_SZ 64
 
 class ofApp : public ofBaseApp{
 
@@ -14,6 +15,9 @@ class ofApp : public ofBaseApp{
 		void update();
 		void draw();
         void readMap(string, int[][GRID_SZ]);
+        void mouseLocation();
+        void rotate(int x, int y);
+    
     
 		void keyPressed(int key);
 		void keyReleased(int key);
@@ -26,16 +30,17 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-		
     
-    vector <Particle> particles;
-    int numOfParticles;
-    int gridSize;
-    int cellSize;
+   
+		
+    ParticleSystem pSys;
+//    int numOfParticles;
     int numLayers;
+    int positionX, positionY;
     vector <ofImage> sprites;
     ofImage spritesheet, sprite;
     int firstLayer[GRID_SZ][GRID_SZ];
     int secondLayer[GRID_SZ][GRID_SZ];
+    float angle[360][360];
     
 };

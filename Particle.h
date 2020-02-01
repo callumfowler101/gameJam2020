@@ -2,18 +2,20 @@
 
 #include "ofMain.h"
 
+using namespace glm;
+
 class Particle {
 public:
-    void setup(int x, int y);
+    void setup(vec2 _origin);
     void update();
     void draw();
     void keyPressed(int key);
     
-    void applyForce(ofVec2f force);
+    void applyForce(vec2 force);
     void edgeCheck();
     
-    
-    ofVec2f loc, acc, vel;
+private:
+    vec2 loc, acc, vel, origin;
     float mass, maxSpeed;
     int ellipseSz, szMult;
     ofColor spriteColors;

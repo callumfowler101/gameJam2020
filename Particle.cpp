@@ -7,35 +7,43 @@
 
 #include "Particle.h"
 
-void Particle::setup(int x, int y){
-    loc = ofVec2f(x, y);
-    vel = ofVec2f(0,0);
-    acc = ofVec2f(0,0);
+void Particle::setup(vec2 _origin){
+    origin = _origin;
+    loc = vec2(origin);
+    vel = vec2(0,0);
+    acc = vec2(0,0);
     mass = ofRandom(1,10);
     ellipseSz = mass;
-    maxSpeed = ofMap(mass, 1, 10, 1, 0.5);
+    maxSpeed = ofMap(mass, 1, 10, 1, 3);
 }
 //--------------------------------------------------------------
 
-void Particle::applyForce(ofVec2f force){
-    ofVec2f f = force/mass;
+void Particle::applyForce(vec2 force){
+    vec2 f = force/mass;
     acc += f;
 }
 //--------------------------------------------------------------
 void Particle::update(){
-//    edgeCheck();
+    edgeCheck();
     vel += acc;
     loc += vel;
+    normalize(vel);
+    vel*maxSpeed;
     acc *= 0;
 }
 //--------------------------------------------------------------
 void Particle::edgeCheck(){
-    if(loc.y > ofGetHeight()+ellipseSz);
+    if(loc.y > ofGetHeight()+ellipseSz){
+        loc = origin;
+    }
+    
 }
 //--------------------------------------------------------------
 void Particle::draw(){
+    ofPushStyle();
     ofSetColor(80,170,210);
     ofDrawEllipse(loc, ellipseSz, ellipseSz);
+    ofPopStyle();
 }
 
 
